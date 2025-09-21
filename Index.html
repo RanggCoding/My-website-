@@ -1,1 +1,506 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - Asisten Cerdas Anda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.ai {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: 10px;
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            margin-right: 10px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            order: 2;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4facfe;
+        }
+
+        .send-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 18px;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #e0e0e0;
+            margin-right: 10px;
+            max-width: 70%;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #666;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .features {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .chat-container {
+                height: 500px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Assistant</h1>
+            <p>Asisten AI Cerdas yang Siap Membantu Anda 24/7</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>💬 Chat dengan AI</h3>
+                <p>Tanyakan apa saja, saya siap membantu!</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        Halo! Saya adalah AI Assistant yang siap membantu Anda. Saya dapat menjawab pertanyaan, memberikan informasi, membantu menyelesaikan masalah, dan berdiskusi tentang berbagai topik. Apa yang bisa saya bantu hari ini?
+                    </div>
+                </div>
+            </div>
+
+            <div class="message ai" style="margin: 0 20px;">
+                <div class="message-avatar">AI</div>
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" class="input-field" id="messageInput" placeholder="Ketik pesan Anda di sini..." />
+                <button class="send-button" id="sendButton">Kirim</button>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI Cerdas</h3>
+                <p>Menggunakan teknologi AI terdepan untuk memberikan respons yang akurat dan relevan sesuai dengan pertanyaan Anda.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Respons Cepat</h3>
+                <p>Mendapatkan jawaban instan untuk pertanyaan Anda dengan waktu respons yang sangat cepat dan efisien.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Multibahasa</h3>
+                <p>Mendukung berbagai bahasa termasuk Bahasa Indonesia, Inggris, dan bahasa lainnya untuk kemudahan komunikasi.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Pengetahuan Luas</h3>
+                <p>Memiliki pengetahuan yang luas di berbagai bidang seperti teknologi, sains, sejarah, budaya, dan banyak lagi.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Aman & Privat</h3>
+                <p>Menjamin keamanan dan privasi percakapan Anda dengan enkripsi yang kuat dan perlindungan data.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Akurat & Relevan</h3>
+                <p>Memberikan informasi yang akurat, terpercaya, dan relevan berdasarkan data dan pengetahuan terkini.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AIAssistant {
+            constructor() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                
+                this.knowledgeBase = {
+                    greetings: [
+                        'halo', 'hai', 'hello', 'hi', 'selamat', 'good morning', 
+                        'good afternoon', 'good evening', 'apa kabar', 'how are you'
+                    ],
+                    thanks: [
+                        'terima kasih', 'thanks', 'thank you', 'makasih', 'thx'
+                    ],
+                    time: [
+                        'jam', 'waktu', 'time', 'tanggal', 'date', 'hari', 'day'
+                    ],
+                    weather: [
+                        'cuaca', 'weather', 'hujan', 'panas', 'dingin', 'cerah'
+                    ],
+                    technology: [
+                        'komputer', 'programming', 'coding', 'website', 'aplikasi',
+                        'software', 'hardware', 'internet', 'teknologi', 'ai', 'artificial intelligence'
+                    ],
+                    education: [
+                        'belajar', 'sekolah', 'universitas', 'kuliah', 'pendidikan',
+                        'study', 'education', 'learn', 'matematika', 'science'
+                    ],
+                    health: [
+                        'kesehatan', 'sehat', 'sakit', 'dokter', 'rumah sakit',
+                        'obat', 'vitamin', 'olahraga', 'diet'
+                    ]
+                };
+                
+                this.responses = {
+                    greetings: [
+                        'Halo! Senang bertemu dengan Anda. Ada yang bisa saya bantu?',
+                        'Hai! Saya siap membantu Anda hari ini. Apa yang ingin Anda tanyakan?',
+                        'Selamat datang! Saya di sini untuk membantu menjawab pertanyaan Anda.',
+                        'Hello! Bagaimana saya bisa membantu Anda hari ini?'
+                    ],
+                    thanks: [
+                        'Sama-sama! Saya senang bisa membantu Anda.',
+                        'Tidak ada masalah! Jika ada pertanyaan lain, jangan ragu untuk bertanya.',
+                        'Dengan senang hati! Saya selalu siap membantu kapan saja.',
+                        'Terima kasih kembali! Ada hal lain yang bisa saya bantu?'
+                    ],
+                    time: [
+                        `Saat ini adalah ${new Date().toLocaleString('id-ID')}. Apakah ada yang bisa saya bantu terkait waktu?`,
+                        `Waktu sekarang: ${new Date().toLocaleTimeString('id-ID')} pada ${new Date().toLocaleDateString('id-ID')}.`,
+                        `Hari ini adalah ${new Date().toLocaleDateString('id-ID', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}.`
+                    ],
+                    weather: [
+                        'Maaf, saya tidak memiliki akses data cuaca real-time. Untuk informasi cuaca terkini, saya sarankan mengecek aplikasi cuaca atau situs web meteorologi.',
+                        'Untuk informasi cuaca yang akurat, saya rekomendasikan menggunakan aplikasi cuaca seperti Weather.com atau AccuWeather.',
+                        'Saya tidak dapat memberikan informasi cuaca real-time, namun Anda bisa mengecek cuaca melalui Google atau aplikasi cuaca di ponsel Anda.'
+                    ],
+                    technology: [
+                        'Teknologi adalah bidang yang sangat menarik! Saya dapat membantu Anda dengan pertanyaan tentang programming, web development, AI, dan teknologi lainnya. Apa yang ingin Anda ketahui?',
+                        'Saya senang membahas teknologi! Mulai dari coding, pengembangan aplikasi, hingga kecerdasan buatan. Ada topik teknologi spesifik yang ingin Anda tanyakan?',
+                        'Dunia teknologi berkembang sangat pesat. Saya dapat membantu menjelaskan konsep programming, web development, database, dan berbagai teknologi modern lainnya.'
+                    ],
+                    education: [
+                        'Pendidikan adalah kunci kesuksesan! Saya dapat membantu dengan berbagai mata pelajaran, metode belajar, atau tips untuk meningkatkan prestasi akademik. Apa yang ingin Anda pelajari?',
+                        'Belajar adalah proses seumur hidup. Saya siap membantu Anda memahami konsep-konsep sulit, memberikan tips belajar efektif, atau menjawab pertanyaan akademik.',
+                        'Saya dapat membantu dengan berbagai topik pendidikan, mulai dari matematika, sains, bahasa, hingga tips menghadapi ujian. Apa yang sedang Anda pelajari?'
+                    ],
+                    health: [
+                        'Kesehatan adalah hal yang sangat penting! Saya dapat memberikan informasi umum tentang gaya hidup sehat, namun untuk masalah kesehatan serius, selalu konsultasikan dengan dokter.',
+                        'Menjaga kesehatan itu penting! Saya bisa berbagi tips tentang pola makan sehat, olahraga, dan gaya hidup yang baik. Ada yang ingin Anda ketahui?',
+                        'Kesehatan fisik dan mental sama pentingnya. Saya dapat memberikan informasi umum, namun untuk diagnosis dan pengobatan, sebaiknya berkonsultasi dengan tenaga medis profesional.'
+                    ],
+                    default: [
+                        'Pertanyaan yang menarik! Berdasarkan pemahaman saya, saya akan mencoba memberikan jawaban terbaik. Bisa Anda berikan lebih detail tentang apa yang ingin Anda ketahui?',
+                        'Saya akan melakukan yang terbaik untuk menjawab pertanyaan Anda. Mungkin Anda bisa memberikan konteks lebih lanjut agar saya bisa membantu dengan lebih akurat?',
+                        'Terima kasih atas pertanyaannya! Saya akan berusaha memberikan informasi yang berguna. Apakah ada aspek spesifik yang ingin Anda ketahui lebih dalam?',
+                        'Pertanyaan yang bagus! Mari kita bahas lebih lanjut. Saya siap membantu memberikan penjelasan yang komprehensif tentang topik ini.'
+                    ]
+                };
+
+                this.conversationHistory = [];
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                this.sendButton.disabled = true;
+
+                this.showTypingIndicator();
+                
+                // Simulate thinking time
+                await this.delay(1000 + Math.random() * 2000);
+                
+                const response = this.generateResponse(message);
+                this.hideTypingIndicator();
+                this.addMessage(response, 'ai');
+                
+                this.sendButton.disabled = false;
+                this.messageInput.focus();
+
+                this.conversationHistory.push({
+                    user: message,
+                    ai: response,
+                    timestamp: new Date()
+                });
+            }
+
+            addMessage(content, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', type);
+                
+                const avatar = document.createElement('div');
+                avatar.classList.add('message-avatar');
+                avatar.textContent = type === 'user' ? 'U' : 'AI';
+                
+                const messageContent = document.createElement('div');
+                messageContent.classList.add('message-content');
+                messageContent.textContent = content;
+                
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(messageContent);
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            generateResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Check for specific patterns and keywords
+                for (const [category, keywords] of Object.entries(this.knowledgeBase)) {
+                    if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+                        const responses = this.responses[category];
+                        return responses[Math.floor(Math.random() * responses.length)];
+                    }
+                }
+
+                // Advanced response generation based on context
+                if (lowerMessage.includes('siapa') || lowerMessage.includes('who')) {
+                    return 'Saya adalah AI Assistant, asisten virtual yang dirancang untuk membantu menjawab pertanyaan dan memberikan informasi yang Anda butuhkan. Saya dapat membahas berbagai topik dan membantu memecahkan masalah.';
+                }
+                
+                if (lowerMessage.includes('bagaimana') || lowerMessage.includes('how')) {
+                    return 'Untuk menjawab "bagaimana", saya memerlukan konteks yang lebih spesifik. Bisa Anda jelaskan lebih detail tentang apa yang ingin Anda ketahui? Saya siap membantu dengan penjelasan langkah demi langkah.';
+                }
+                
+                if (lowerMessage.includes('mengapa') || lowerMessage.includes('why')) {
+                    return 'Pertanyaan "mengapa" menunjukkan Anda ingin memahami alasan atau sebab-akibat. Saya akan senang menjelaskan, namun mohon berikan konteks yang lebih spesifik agar saya bisa memberikan penjelasan yang akurat.';
+                }
+                
+                if (lowerMessage.includes('kapan') || lowerMessage.includes('when')) {
+                    return 'Untuk pertanyaan waktu atau jadwa
