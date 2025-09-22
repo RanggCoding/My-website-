@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SiCepat Newsv ID — Berita Hot Indonesia</title>
+  <style>
+    /* Classic/retro newspaper look */
+    :root{--paper:#fbf7ef;--ink:#111;--accent:#b30000}
+    body{background:var(--paper);color:var(--ink);font-family: Georgia, 'Times New Roman', Times, serif;line-height:1.5;margin:0;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--accent);padding-bottom:10px;margin-bottom:18px}
+    .logo{font-size:32px;font-weight:700;letter-spacing:2px}
+    .byline{font-size:12px;color:#333}
+    nav{margin-top:8px}
+    .container{max-width:980px;margin:0 auto}
+    .hot{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+    .main-article{background:white;padding:16px;border:1px solid #e5e0d6}
+    h1,h2{margin:0 0 10px}
+    .headline{font-size:20px;margin-bottom:8px}
+    .meta{font-size:12px;color:#666;margin-bottom:12px}
+    aside{background:#fff8f8;padding:12px;border:1px solid #f0dede}
+    .list-item{margin-bottom:12px}
+    footer{margin-top:26px;border-top:1px dashed #ddd;padding-top:12px;font-size:13px;color:#444}
+    a{color:var(--accent);text-decoration:none}
+    .ticker{background:#111;color:#fff;padding:8px 12px;display:inline-block;border-radius:3px;font-weight:700}
+    .clock{font-size:13px;color:#222}
+    @media(max-width:760px){.hot{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <div class="logo">SiCepat Newsv ID</div>
+        <div class="byline">Berita Hot Indonesia — Gaya Klasik</div>
+      </div>
+      <div style="text-align:right">
+        <div class="ticker">HOT NOW</div>
+        <div class="clock" id="clock">—</div>
+      </div>
+    </header>
+
+    <section class="hot">
+      <article class="main-article">
+        <h1>Berita Utama</h1>
+        <div id="articles">
+          <!-- Articles injected by JS or edited statically -->
+          <div class="list-item">
+            <div class="headline"><a href="#" id="a1" target="_blank">Memuat berita...</a></div>
+            <div class="meta" id="m1">Sumber — waktu</div>
+          </div>
+        </div>
+      </article>
+
+      <aside>
+        <h2>Ringkasan Singkat</h2>
+        <p id="summary">Memuat ringkasan...</p>
+        <hr>
+        <h2>Daftar Singkat</h2>
+        <ul id="list">
+          <li>Memuat...</li>
+        </ul>
+      </aside>
+    </section>
+
+    <footer>
+      <div>SiCepat Newsv ID — dibuat dengan HTML/CSS/JS. Sumber berita berasal dari berbagai media berita terpercaya.</div>
+      <div style="margin-top:6px">Petunjuk hosting di GitHub Pages tersedia di bawah.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Simple clock
+    function updateClock(){
+      const now=new Date();
+      const opts={weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'};
+      document.getElementById('clock').textContent=now.toLocaleString('id-ID',opts);
+    }
+    setInterval(updateClock,1000);updateClock();
+
+    // Default (current) headlines baked into the page. Edit these when you update the file.
+    const hotArticles=[
+      {
+        title: 'NGO minta hentikan program makan gratis sekolah setelah outbreak keracunan massal',
+        src: 'https://www.reuters.com/world/asia-pacific/indonesia-urged-halt-10-billion-free-school-meals-plan-after-mass-food-poisoning-2025-09-22/',
+        meta: 'Reuters — 22 Sep 2025',
+        summary: 'Seruan dari beberapa NGO agar pemerintah meninjau program makan gratis sekolah usai laporan keracunan yang mempengaruhi ratusan anak.'
+      },
+      {
+        title: 'Defisit anggaran Jan-Agustus tercatat 1.35% PDB',
+        src: 'https://www.reuters.com/world/asia-pacific/indonesia-jan-aug-budget-deficit-135-gdp-ministry-data-shows-2025-09-22/',
+        meta: 'Reuters — 22 Sep 2025',
+        summary: 'Data Kementerian Keuangan menunjukkan defisit dan langkah stimulus untuk mendukung pertumbuhan kuartal akhir.'
+      },
+      {
+        title: 'Presiden tunjuk jenderal pensiunan jadi Menko Polhukam pasca protes mematikan',
+        src: 'https://apnews.com/article/65b7f136b77d939999da53cb55f083c8',
+        meta: 'AP News — beberapa hari lalu',
+        summary: 'Penunjukan bertujuan meredam gejolak politik setelah protes yang menyebabkan korban jiwa.'
+      },
+      {
+        title: 'Ribuan buruh demo di Jakarta, ajukan lima tuntutan',
+        src: 'https://en.antaranews.com/news/381488/thousands-of-workers-hold-protest-make-five-demands',
+        meta: 'Antara News — 22 Sep 2025',
+        summary: 'Aksi massa pekerja di DPR menuntut perbaikan upah dan perlindungan kerja.'
+      }
+    ];
+
+    // Inject into DOM
+    const articlesDiv=document.getElementById('articles');
+    const summaryEl=document.getElementById('summary');
+    const listEl=document.getElementById('list');
+
+    articlesDiv.innerHTML='';
+    hotArticles.forEach((a,idx)=>{
+      const item=document.createElement('div');item.className='list-item';
+      item.innerHTML=`<div class="headline"><a href="${a.src}" target="_blank">${a.title}</a></div><div class="meta">${a.meta}</div><p>${a.summary}</p>`;
+      articlesDiv.appendChild(item);
+
+      const li=document.createElement('li');li.innerHTML=`<a href="${a.src}" target="_blank">${a.title}</a>`;listEl.appendChild(li);
+    });
+
+    summaryEl.textContent=hotArticles.map(x=>x.title).join(' — ');
+  </script>
+</body>
+</html>
